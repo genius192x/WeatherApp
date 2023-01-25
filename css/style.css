@@ -131,18 +131,6 @@ h6 {
   z-index: 5;
 }
 
-.icon-menu span,
-.icon-menu::before,
-.icon-menu::after {
-  content: "";
-  transition: all 0.3s ease 0s;
-  right: 0;
-  position: absolute;
-  width: 100%;
-  height: 0.125rem;
-  background-color: rgb(255, 255, 255);
-}
-
 .icon-menu::before {
   top: 0;
 }
@@ -169,17 +157,13 @@ h6 {
   transform: rotate(45deg);
 }
 
-body {
-  background-color: rgb(240, 241, 242);
-}
-
 #app {
+  background: #1e4a63;
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   width: 480px;
-  background-color: rgb(240, 241, 242);
   border-radius: 0px;
   overflow-x: hidden;
   min-height: 480px;
@@ -194,7 +178,6 @@ body {
 #app::before {
   content: "";
   display: block;
-  background: #1e4a63;
   width: 100%;
   height: 100%;
   position: absolute;
