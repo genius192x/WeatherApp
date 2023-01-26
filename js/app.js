@@ -88,11 +88,12 @@ const getImage = description => {
     const value = description.toLowerCase();
 
     switch (value) {
-        case "overcast":
-            return "partly.png";
+        case "небольшая морось":
+            return "rain.svg";
 
         case "переменная облачность":
             return "small_cloud.svg";
+
         case "облачно с прояснениями":
             return "small_cloud.svg";
         case "пасмурно":
@@ -107,8 +108,8 @@ const getImage = description => {
         case "ясно":
             return "clear.svg";
 
-        case "light rain":
-            return "light-rain.svg";
+        case "небольшой снег":
+            return "smalSnow.png";
 
         default:
             return "the.png";
@@ -179,8 +180,8 @@ const handleInput = e => {
 };
 const handleSubmit = e => {
     e.preventDefault();
-    const value = store.city;
-    appWrap.classList.remove("is-day");
+    const value = store.city.trim();
+
     if (!value) return null;
     const input = document.querySelector('.form-input');
     localStorage.setItem("query", value);
