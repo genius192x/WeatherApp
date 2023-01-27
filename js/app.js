@@ -6,13 +6,67 @@
 "use strict";
 
 // 8e0dca8b03bf2ae875f303ecc8bb09c2
+//========================================================================================================================================================
+
+function activAnimate() {
+    const animItems = document.querySelectorAll('._anim-items');
+    if (animItems.length > 0) {
+        window.addEventListener('scroll', animOnScroll);
+        function animOnScroll() {
+            for (let index = 0; index < animItems.length; index++) {
+                const animItem = animItems[index];
+                const animItemHeight = animItem.offsetHeight;
+                const animItemOffset = offset(animItem).top;
+                const animStart = 4;
+
+                let animItemPoint = window.innerHeight - animItemHeight / animStart;
+                if (animItemHeight > window.innerHeight) {
+                    animItemPoint = window.innerHeight - window.innerHeight / animStart;
+                }
+
+                if ((pageYOffset > animItemOffset - animItemPoint) && pageYOffset < (animItemOffset + animItemHeight)) {
+                    animItem.classList.add('_active');
+                } else {
+                    if (!animItem.classList.contains('_anim-no-hide')) {
+                        animItem.classList.remove('_active');
+                    }
+                }
+            }
+        }
+        function offset(el) {
+            const rect = el.getBoundingClientRect(),
+                scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+                scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+        }
+
+        setTimeout(() => {
+            animOnScroll();
+        }, 300);
+    }
+}
+
+//========================================================================================================================================================
+const iconMenu = document.querySelector('.icon-menu');
+const menuWrap = document.querySelector('.menu__search');
+function toggleClassMenu() {
+
+    function toggleClass() {
+        iconMenu.classList.toggle('menu-open');
+        menuWrap.classList.toggle('menu-open');
+    }
+    iconMenu.addEventListener('click', toggleClass)
+}
+if (iconMenu && menuWrap) {
+    toggleClassMenu()
+}
+//========================================================================================================================================================
 
 
-const root = document.getElementById("root");
+const app = document.querySelector(".app");
 // const script_link = "http://api.weatherstack.com/current?access_key=75c5a84211d803cd2b29de9cde7415f8";
-const popup = document.getElementById("popup");
-const textInput = document.getElementById("text-input");
-const script_form = document.getElementById("form");
+
+
 let store = {
     city: "Taganrog",
     temperature: 0,
@@ -28,8 +82,7 @@ let store = {
         visibility: {}
     }
 };
-//https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru
-// https://pro.openweathermap.org/data/2.5/forecast/hourly?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru
+
 const fetchData = async () => {
     try {
         const query = localStorage.getItem("query") || store.city;
@@ -47,36 +100,29 @@ const fetchData = async () => {
             feelsLike,
             description: description,
             properties: {
+                windSpeed: {
+                    title: "Скорость ветра",
+                    value: `${windSpeed} м/с`,
+                    icon: "wind.svg"
+                },
                 cloudcover: {
                     title: "Облачность",
                     value: `${cloudcover} % `,
-                    icon: "cloud.png"
+                    icon: "cloud.svg"
+                },
+                visibility: {
+                    title: "Видмость",
+                    value: `${visibility / 100}% `,
+                    icon: "visibility.svg"
                 },
                 humidity: {
                     title: "Влажность",
                     value: `${humidity} % `,
-                    icon: "humidity.png"
+                    icon: "droplets.svg"
                 },
-                windSpeed: {
-                    title: "Скорость ветра",
-                    value: `${windSpeed} km / h`,
-                    icon: "wind.png"
-                },
-                pressure: {
-                    title: "Давление",
-                    value: `${pressure} % `,
-                    icon: "gauge.png"
-                },
-                // uvIndex: {
-                //     title: "uv Index",
-                //     value: `${ uvIndex } / 100`,
-                //     icon: "uv-index.png"
-                // },
-                visibility: {
-                    title: "Видмость",
-                    value: `${visibility / 100}% `,
-                    icon: "visibility.png"
-                }
+
+
+
             }
         };
         renderComponent();
@@ -88,6 +134,9 @@ const getImage = description => {
     const value = description.toLowerCase();
 
     switch (value) {
+        case "небольшая облачность":
+            return "small_cloud.svg";
+
         case "небольшая морось":
             return "rain.svg";
 
@@ -118,60 +167,68 @@ const getImage = description => {
 const renderProperty = (properties) => {
     return Object.values(properties)
         .map(({ title, value, icon }) => {
-            return `<div class="property">
-            <div class="property-icon">
-              <img class="property-icons" src="./img/${icon}" alt="">
-            </div>
-            <div class="property-info">
-              <div class="property-info__value">${value}</div>
-              <div class="property-info__description">${title}</div>
-            </div>
-          </div>`;
+            return `
+            <div class="main__property _anim-items _anim-no-hide">
+				
+					<img class="property__image" src="./img/${icon}" alt="">
+				
+				<div class="property__info">
+					<div class="property__info-value">${value}</div>
+					<div class="property__info-description">${title}</div>
+				</div>
+			</div>
+            `;
         })
         .join("");
 };
 const appWrap = document.getElementById("app");
+const wrapper = document.querySelector('.wrapper');
+let date = new Date();
+let fullDate = `${date.getDate()}.0${date.getMonth() + 1}.${date.getFullYear()}`
+const dateWrap = document.querySelector('.date__wrap');
+
 const markup = () => {
     const { city, description, observationTime, feelsLike, temperature, isDay, properties } = store;
-    const containerClass = "yes" === isDay ? "is-day" : "";
-
-    if ("is-day" == containerClass) appWrap.classList.add("is-day"); else appWrap.classList.remove("is-day");
     return `
-        <div div class="container" >
-    
-        <div class="top">
-           
-                <div class="city">               
-                <div class="city-subtitle"></div>
-                <div class="city-title" id="city">
-                <span>${city}</span>               
-                </div>
-            </div>
-            <div class="city-info">
-                <div class="top-left">
-                    <img class="icon" src="./img/${getImage(description)}" alt="" />               
-                    <div class="description">${description}</div>              
-                </div>                          
-                <div class="top-right">                
-                    <div class="city-info__subtitle">Ощущается как ${Math.round(feelsLike)}</div>
-                    <div class="city-info__title">${Math.round(temperature)}°</div>              
-                </div>
-            </div>
-        </div>
-        <div id="properties">${renderProperty(properties)}</div>      
-    </div > `;
+    <header class="header">
+            <h2 id="city" class="header__title">${city}</h2>
+		    <p class="header__date">${fullDate}</p>
+       
+		
+		<div class="header__data">
+			<div class="header__info _anim-items _anim-no-hide">
+				<div class="header__temperature">${Math.round(temperature)}°</div>
+				<div class="header__description">${description}</div>
+			</div>
+			<div class="header__icon _anim-items _anim-no-hide">
+				<img class="header__image" src="/img/${getImage(description)}" alt="">
+			</div>
+		</div>
+
+	</header>
+	<main class="main">
+		<div id="properties" class="main__properties">
+			${renderProperty(properties)}
+		</div>
+	</main>
+   
+    `;
 };
 
-// const closeSearch = () => {
-//     const closeBtn = document.querySelector(".popup-close");
-//     closeBtn.addEventListener("click", togglePopupClass);
-// };
+
 
 const renderComponent = () => {
-    root.innerHTML = markup();
+    wrapper.innerHTML = markup()
+    activAnimate()
+
+
+
+
 
 
 };
+const textInput = document.getElementById("text-input");
+const script_form = document.querySelector("form");
 const handleInput = e => {
     store = {
         ...store,
@@ -187,9 +244,13 @@ const handleSubmit = e => {
     localStorage.setItem("query", value);
 
     fetchData();
+
     input.value = '';
+    iconMenu.classList.remove('menu-open');
+    menuWrap.classList.remove('menu-open');
 
 };
+
 script_form.addEventListener("submit", handleSubmit);
 textInput.addEventListener("input", handleInput);
 fetchData();
