@@ -201,7 +201,7 @@ const markup = () => {
 				<div class="header__description">${description}</div>
 			</div>
 			<div class="header__icon _anim-items _anim-no-hide">
-				<img class="header__image" src="/img/${getImage(description)}" alt="">
+				<img class="header__image" src="img/${getImage(description)}" alt="">
 			</div>
 		</div>
 
