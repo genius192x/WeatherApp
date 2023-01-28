@@ -1,5 +1,4 @@
 
-"use strict";
 
 //========================================================================================================================================================
 
@@ -66,7 +65,7 @@ if (iconMenu && menuWrap) {
 const app = document.querySelector(".app");
 // const script_link = "http://api.weatherstack.com/current?access_key=75c5a84211d803cd2b29de9cde7415f8";
 
-
+const cardsWrap = document.querySelector('.tamplate__cards');
 let store = {
     city: "Taganrog",
     temperature: 0,
@@ -88,7 +87,7 @@ const fetchData = async () => {
         const query = localStorage.getItem("query") || store.city;
         const result = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
         const data = await result.json();
-        console.log(data);
+
         const { visibility, weather: { 0: { description } }, main: { temp: temperature, feels_like: feelsLike, humidity, pressure, }, wind: { speed: windSpeed }, name, clouds: { all: cloudcover } } = data;
 
 
@@ -136,6 +135,8 @@ const getImage = description => {
     switch (value) {
         case "небольшая облачность":
             return "small_cloud.svg";
+        case "небольшой дождь":
+            return "rain.svg";
 
         case "небольшая морось":
             return "rain.svg";
@@ -220,12 +221,6 @@ const markup = () => {
 const renderComponent = () => {
     wrapper.innerHTML = markup()
     activAnimate()
-
-
-
-
-
-
 };
 const textInput = document.getElementById("text-input");
 const script_form = document.querySelector("form");
@@ -244,7 +239,8 @@ const handleSubmit = e => {
     localStorage.setItem("query", value);
 
     fetchData();
-
+    cardsWrap.innerHTML = '';
+    fetchAll();
     input.value = '';
     iconMenu.classList.remove('menu-open');
     menuWrap.classList.remove('menu-open');
@@ -254,3 +250,123 @@ const handleSubmit = e => {
 script_form.addEventListener("submit", handleSubmit);
 textInput.addEventListener("input", handleInput);
 fetchData();
+
+//========================================================================================================================================================
+//========================================================================================================================================================
+
+//========================================================================================================================================================
+
+let storeHour = {
+    date: 0,
+    temperature: 0,
+    description: "",
+
+
+};
+const fetchAll = async () => {
+    try {
+        const query = localStorage.getItem("query") || store.city;
+        const result = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
+        const data = await result.json();
+        const listResult = data.list;
+        const setDayBtns = document.querySelectorAll('.tamplate__title');
+        console.log(setDayBtns);
+        const tommorowWeather = listResult.filter(function (e) {
+            let date = new Date();
+            let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${date.getDate() + 1}`
+            // console.log(e.dt_txt);
+            const itemDate = e.dt_txt.slice(0, 10);
+
+            if (itemDate == fullDate) {
+                return e;
+            }
+        })
+        const todayWeather = listResult.filter(function (e) {
+            let date = new Date();
+            let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${date.getDate()}`
+            // console.log(e.dt_txt);
+            const itemDate = e.dt_txt.slice(0, 10);
+
+            if (itemDate == fullDate) {
+                return e;
+            }
+        })
+        let current = todayWeather;
+        setDayBtns.forEach(item => {
+
+            item.addEventListener('click', (e) => {
+
+                const cardsWrap = document.querySelector('.tamplate__cards');
+                if (e.target.innerText == "Завтра") {
+                    current = tommorowWeather;
+
+                    cardsWrap.innerHTML = "";
+                    setDay(current)
+                } else if (e.target.innerText == "Сегодня") {
+                    current = todayWeather;
+
+                    cardsWrap.innerHTML = "";
+                    setDay(current)
+                }
+            })
+        })
+
+        for (let i = 0; i < setDayBtns.length; i++) {/*прокручиваем в цикле все элементы*/
+            setDayBtns[i].addEventListener('click', function () {  /*при клике на элемент 
+ */
+                for (let i = 0; i < setDayBtns.length; i++) {
+                    setDayBtns[i].classList.remove('active'); /*удаляем у всех class active*/
+                }
+                this.classList.add('active');/*добавляем class active по которому кликнули */
+            })
+        }
+        setDay(current)
+
+
+        function setDay(dayList) {
+            dayList.forEach(item => {
+
+                const { weather: { 0: { description } }, main: { temp: temperature, }, dt_txt: date } = item;
+                storeHour = {
+                    date,
+                    temperature,
+                    description,
+
+
+                };
+                const markup = () => {
+                    const { description, temperature, date } = storeHour;
+                    console.log(description);
+                    getImage(description);
+                    return `<div class="tamplate__card _anim-items _anim-no-hide ">
+						<div class="card__date">${date.slice(11, 16)}</div>
+						<img src="img/${getImage(description)}" alt="" class="card__image">
+						<div class="card__temp">${Math.round(temperature)}°</div>
+					</div>`
+                }
+
+
+                // cardsWrap.innerHTML = '';
+                cardsWrap.insertAdjacentHTML("beforeend", markup());
+
+            });
+            const cardInfo = document.querySelectorAll('.tamplate__card');
+            cardInfo.forEach(item => {
+                function addAnimate() {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translate(0, 0%)';
+                }
+                setTimeout(addAnimate, 500)
+            })
+        }
+
+
+
+
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+fetchAll();
