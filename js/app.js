@@ -189,7 +189,7 @@ let fullDate = `${date.getDate()}.0${date.getMonth() + 1}.${date.getFullYear()}`
 const dateWrap = document.querySelector('.date__wrap');
 
 const markup = () => {
-    const { city, description, observationTime, feelsLike, temperature, isDay, properties } = store;
+    const { city, description, feelsLike, temperature, properties } = store;
     return `
     <header class="header">
             <h2 id="city" class="header__title">${city}</h2>
@@ -198,7 +198,8 @@ const markup = () => {
 		
 		<div class="header__data">
 			<div class="header__info _anim-items _anim-no-hide">
-				<div class="header__temperature">${Math.round(temperature)}°</div>
+				<div class="header__temperature">${Math.round(temperature)}° </div>
+                <span>Ощущается <br> как ${Math.round(feelsLike)}°</span>
 				<div class="header__description">${description}</div>
 			</div>
 			<div class="header__icon _anim-items _anim-no-hide">
@@ -311,13 +312,13 @@ const fetchAll = async () => {
             })
         })
 
-        for (let i = 0; i < setDayBtns.length; i++) {/*прокручиваем в цикле все элементы*/
-            setDayBtns[i].addEventListener('click', function () {  /*при клике на элемент 
- */
+        for (let i = 0; i < setDayBtns.length; i++) {
+            setDayBtns[i].addEventListener('click', function () {
+
                 for (let i = 0; i < setDayBtns.length; i++) {
-                    setDayBtns[i].classList.remove('active'); /*удаляем у всех class active*/
+                    setDayBtns[i].classList.remove('active');
                 }
-                this.classList.add('active');/*добавляем class active по которому кликнули */
+                this.classList.add('active');
             })
         }
         setDay(current)
@@ -326,22 +327,23 @@ const fetchAll = async () => {
         function setDay(dayList) {
             dayList.forEach(item => {
 
-                const { weather: { 0: { description } }, main: { temp: temperature, }, dt_txt: date } = item;
+                const { weather: { 0: { description } }, main: { temp: temperature, feels_like: feelsLike, }, dt_txt: date } = item;
                 storeHour = {
                     date,
                     temperature,
                     description,
+                    feelsLike,
 
 
                 };
                 const markup = () => {
-                    const { description, temperature, date } = storeHour;
+                    const { description, temperature, date, feelsLike } = storeHour;
                     console.log(description);
                     getImage(description);
                     return `<div class="tamplate__card _anim-items _anim-no-hide ">
 						<div class="card__date">${date.slice(11, 16)}</div>
 						<img src="img/${getImage(description)}" alt="" class="card__image">
-						<div class="card__temp">${Math.round(temperature)}°</div>
+						<div class="card__temp">${Math.round(temperature)}° <span>(${Math.round(feelsLike)}°)</span></div>
 					</div>`
                 }
 
@@ -370,3 +372,26 @@ const fetchAll = async () => {
 };
 
 fetchAll();
+const fetchMap = async () => {
+    try {
+        //https://tile.openweathermap.org/map/wind_new/10/{x}/{y}.png?appid=8e0dca8b03bf2ae875f303ecc8bb09c2
+        const result = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
+        const data = await result.json();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    } catch (err) {
+        console.log(err);
+    }
+};
