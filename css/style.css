@@ -369,7 +369,7 @@ body {
   max-width: -webkit-fit-content;
   max-width: -moz-fit-content;
   max-width: fit-content;
-  padding: 20px 30px;
+  padding: 20px 20px;
   background: #202329;
   border-radius: 10px;
   display: flex;
@@ -411,6 +411,7 @@ body {
   height: 50px;
 }
 .card__temp {
+  margin-top: 5px;
   font-family: "Chakra Petch";
   font-style: normal;
   font-weight: 400;

@@ -85,9 +85,9 @@ let store = {
 const fetchData = async () => {
     try {
         const query = localStorage.getItem("query") || store.city;
-        const result = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
+        const result = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=00e45fe68a2db4d40031498dbe5155ac&units=metric&lang=ru`);
         const data = await result.json();
-
+        console.log(data);
         const { visibility, weather: { 0: { description } }, main: { temp: temperature, feels_like: feelsLike, humidity, pressure, }, wind: { speed: windSpeed }, name, clouds: { all: cloudcover } } = data;
 
 
@@ -126,6 +126,7 @@ const fetchData = async () => {
         };
         renderComponent();
     } catch (err) {
+        localStorage.clear();
         console.log(err);
     }
 };
@@ -198,7 +199,7 @@ const markup = () => {
 		
 		<div class="header__data">
 			<div class="header__info _anim-items _anim-no-hide">
-				<div class="header__temperature">${Math.round(temperature)}° </div>
+				<div class="header__temperature">${Math.round(temperature)}°</div>
                 <span>Ощущается <br> как ${Math.round(feelsLike)}°</span>
 				<div class="header__description">${description}</div>
 			</div>
@@ -221,7 +222,9 @@ const markup = () => {
 
 const renderComponent = () => {
     wrapper.innerHTML = markup()
-    activAnimate()
+    activAnimate();
+    cardsWrap.innerHTML = '';
+    fetchAll();
 };
 const textInput = document.getElementById("text-input");
 const script_form = document.querySelector("form");
@@ -240,8 +243,8 @@ const handleSubmit = e => {
     localStorage.setItem("query", value);
 
     fetchData();
-    cardsWrap.innerHTML = '';
-    fetchAll();
+
+
     input.value = '';
     iconMenu.classList.remove('menu-open');
     menuWrap.classList.remove('menu-open');
@@ -267,7 +270,7 @@ let storeHour = {
 const fetchAll = async () => {
     try {
         const query = localStorage.getItem("query") || store.city;
-        const result = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
+        const result = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=00e45fe68a2db4d40031498dbe5155ac&units=metric&lang=ru`);
         const data = await result.json();
         const listResult = data.list;
         const setDayBtns = document.querySelectorAll('.tamplate__title');
@@ -343,7 +346,7 @@ const fetchAll = async () => {
                     return `<div class="tamplate__card _anim-items _anim-no-hide ">
 						<div class="card__date">${date.slice(11, 16)}</div>
 						<img src="img/${getImage(description)}" alt="" class="card__image">
-						<div class="card__temp">${Math.round(temperature)}° <span>(${Math.round(feelsLike)}°)</span></div>
+						<div class="card__temp">${Math.round(temperature)}°<span>(${Math.round(feelsLike)}°)</span></div>
 					</div>`
                 }
 
@@ -371,27 +374,13 @@ const fetchAll = async () => {
     }
 };
 
-fetchAll();
-const fetchMap = async () => {
-    try {
-        //https://tile.openweathermap.org/map/wind_new/10/{x}/{y}.png?appid=8e0dca8b03bf2ae875f303ecc8bb09c2
-        const result = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
-        const data = await result.json();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    } catch (err) {
-        console.log(err);
-    }
-};
+// fetchAll();
+// const fetchMap = async () => {
+//     try {
+//         //https://tile.openweathermap.org/map/wind_new/10/{x}/{y}.png?appid=8e0dca8b03bf2ae875f303ecc8bb09c2
+//         const result = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
+//         const data = await result.json();
+//     } catch (err) {
+//         console.log(err);
+//     }
+// };
