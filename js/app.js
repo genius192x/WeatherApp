@@ -44,6 +44,16 @@ function activAnimate() {
         }, 300);
     }
 }
+//========================================================================================================================================================
+const loader = document.createElement('div')
+loader.classList.add("loader")
+
+function addLoadedClass() {
+    document.querySelector('body').classList.add("loaded")
+}
+
+window.addEventListener('load', addLoadedClass)
+
 
 //========================================================================================================================================================
 const iconMenu = document.querySelector('.icon-menu');
@@ -63,6 +73,11 @@ if (iconMenu && menuWrap) {
 
 
 const app = document.querySelector(".app");
+const body = document.querySelector('body');
+console.log(loader);
+body.insertAdjacentElement("afterBegin", loader)
+// setTimeout("loader.remove()", 1000)
+// setTimeout("loader.remove()", 1000)
 // const script_link = "http://api.weatherstack.com/current?access_key=75c5a84211d803cd2b29de9cde7415f8";
 
 const cardsWrap = document.querySelector('.tamplate__cards');
@@ -87,7 +102,7 @@ const fetchData = async () => {
         const query = localStorage.getItem("query") || store.city;
         const result = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=00e45fe68a2db4d40031498dbe5155ac&units=metric&lang=ru`);
         const data = await result.json();
-        console.log(data);
+
         const { visibility, weather: { 0: { description } }, main: { temp: temperature, feels_like: feelsLike, humidity, pressure, }, wind: { speed: windSpeed }, name, clouds: { all: cloudcover } } = data;
 
 
@@ -274,7 +289,7 @@ const fetchAll = async () => {
         const data = await result.json();
         const listResult = data.list;
         const setDayBtns = document.querySelectorAll('.tamplate__title');
-        console.log(setDayBtns);
+
         const tommorowWeather = listResult.filter(function (e) {
             let date = new Date();
             let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${date.getDate() + 1}`
@@ -341,7 +356,7 @@ const fetchAll = async () => {
                 };
                 const markup = () => {
                     const { description, temperature, date, feelsLike } = storeHour;
-                    console.log(description);
+
                     getImage(description);
                     return `<div class="tamplate__card _anim-items _anim-no-hide ">
 						<div class="card__date">${date.slice(11, 16)}</div>
