@@ -49,7 +49,7 @@ function activAnimate() {
 
 function addLoadedClass() {
     document.querySelector('body').classList.add("loaded")
-    
+
 }
 
 window.addEventListener('load', addLoadedClass)
@@ -259,6 +259,11 @@ const handleSubmit = e => {
 
     fetchData();
 
+    const setDayBtns = document.querySelectorAll('.tamplate__title');
+    setDayBtns.forEach(btn => {
+        btn.classList.remove("active")
+    })
+    const todayBtn = document.querySelector('.tamplate__title').classList.add('active');
 
     input.value = '';
     iconMenu.classList.remove('menu-open');
@@ -303,13 +308,9 @@ const fetchAll = async () => {
 
         const tommorowWeather = listResult.filter(function (e) {
             let date = new Date();
-
-
             let fullDate = `${date.getFullYear()}-${month}-${tommorow}`
             // console.log(e.dt_txt);
-
             const itemDate = e.dt_txt.slice(0, 10);
-
             if (itemDate == fullDate) {
                 return e;
             }
@@ -318,9 +319,7 @@ const fetchAll = async () => {
             let date = new Date();
             let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${day}`
             // console.log(e.dt_txt);
-
             const itemDate = e.dt_txt.slice(0, 10);
-
             if (itemDate == fullDate) {
                 return e;
             }
@@ -329,25 +328,20 @@ const fetchAll = async () => {
         setDayBtns.forEach(item => {
 
             item.addEventListener('click', (e) => {
-
                 const cardsWrap = document.querySelector('.tamplate__cards');
                 if (e.target.innerText == "Завтра") {
                     current = tommorowWeather;
-
                     cardsWrap.innerHTML = "";
                     setDay(current)
                 } else if (e.target.innerText == "Сегодня") {
                     current = todayWeather;
-
                     cardsWrap.innerHTML = "";
                     setDay(current)
                 }
             })
         })
-
         for (let i = 0; i < setDayBtns.length; i++) {
             setDayBtns[i].addEventListener('click', function () {
-
                 for (let i = 0; i < setDayBtns.length; i++) {
                     setDayBtns[i].classList.remove('active');
                 }
@@ -406,14 +400,3 @@ const fetchAll = async () => {
         console.log(err);
     }
 };
-
-
-// const fetchMap = async () => {
-//     try {
-//         //https://tile.openweathermap.org/map/wind_new/10/{x}/{y}.png?appid=8e0dca8b03bf2ae875f303ecc8bb09c2
-//         const result = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=8e0dca8b03bf2ae875f303ecc8bb09c2&units=metric&lang=ru`);
-//         const data = await result.json();
-//     } catch (err) {
-//         console.log(err);
-//     }
-// };
