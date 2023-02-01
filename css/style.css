@@ -256,6 +256,7 @@ body.loaded .loader {
 }
 
 .menu__icon {
+  cursor: pointer;
   position: absolute;
   display: block;
   top: 30px;
@@ -363,15 +364,13 @@ body.loaded .loader {
 }
 .tamplate__cards {
   display: flex;
-  gap: 7px;
+  gap: 10px;
+  flex-wrap: wrap;
   margin-top: 20px;
-  overflow-y: auto;
   padding-bottom: 10px;
 }
 .tamplate__card {
-  max-width: -webkit-fit-content;
-  max-width: -moz-fit-content;
-  max-width: fit-content;
+  flex: 1 1 auto;
   padding: 20px 20px;
   background: #202329;
   border-radius: 10px;
@@ -381,23 +380,6 @@ body.loaded .loader {
   justify-content: center;
   opacity: 0;
   transform: translate(-10%, 0%);
-  transition: all 0.4s ease;
-}
-.tamplate__card._active {
-  transition: all 0.4s ease-out;
-  opacity: 1;
-  transform: translate(0, 0%);
-}
-.tamplate .tamplate__cards::-webkit-scrollbar {
-  width: 3px;
-  height: 5px;
-}
-.tamplate .tamplate__cards::-webkit-scrollbar-track {
-  background-color: inherit;
-}
-.tamplate .tamplate__cards::-webkit-scrollbar-thumb {
-  background: rgb(255, 255, 255);
-  border-radius: 10px;
 }
 
 .card__date {
@@ -442,7 +424,9 @@ body.loaded .loader {
   transition: all 0.3s ease 0.3s;
   width: 100%;
   position: absolute;
-  min-height: 100%;
+  top: 0;
+  left: 0;
+  height: 100%;
   background-color: #1b1d1f;
   z-index: 500;
 }

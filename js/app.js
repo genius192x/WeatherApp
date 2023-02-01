@@ -45,11 +45,11 @@ function activAnimate() {
     }
 }
 //========================================================================================================================================================
-const loader = document.createElement('div')
-loader.classList.add("loader")
+
 
 function addLoadedClass() {
     document.querySelector('body').classList.add("loaded")
+    
 }
 
 window.addEventListener('load', addLoadedClass)
@@ -72,10 +72,10 @@ if (iconMenu && menuWrap) {
 //========================================================================================================================================================
 
 
-const app = document.querySelector(".app");
-const body = document.querySelector('body');
-console.log(loader);
-body.insertAdjacentElement("afterBegin", loader)
+// const app = document.querySelector(".app");
+// const body = document.querySelector('body');
+
+// body.insertAdjacentElement("afterBegin", loader)
 // setTimeout("loader.remove()", 1000)
 // setTimeout("loader.remove()", 1000)
 // const script_link = "http://api.weatherstack.com/current?access_key=75c5a84211d803cd2b29de9cde7415f8";
@@ -290,10 +290,24 @@ const fetchAll = async () => {
         const listResult = data.list;
         const setDayBtns = document.querySelectorAll('.tamplate__title');
 
+        let month;
+        let day;
+        let tommorow;
+        if (date.getMonth() < 10) {
+            month = "0" + (date.getMonth() + 1);
+        }
+        if (date.getDate() < 10) {
+            tommorow = "0" + (date.getDate() + 1);
+            day = "0" + date.getDate();
+        }
+
         const tommorowWeather = listResult.filter(function (e) {
             let date = new Date();
-            let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${date.getDate() + 1}`
+
+
+            let fullDate = `${date.getFullYear()}-${month}-${tommorow}`
             // console.log(e.dt_txt);
+
             const itemDate = e.dt_txt.slice(0, 10);
 
             if (itemDate == fullDate) {
@@ -302,8 +316,9 @@ const fetchAll = async () => {
         })
         const todayWeather = listResult.filter(function (e) {
             let date = new Date();
-            let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${date.getDate()}`
+            let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${day}`
             // console.log(e.dt_txt);
+
             const itemDate = e.dt_txt.slice(0, 10);
 
             if (itemDate == fullDate) {
@@ -371,9 +386,12 @@ const fetchAll = async () => {
 
             });
             const cardInfo = document.querySelectorAll('.tamplate__card');
-            cardInfo.forEach(item => {
+            cardInfo.forEach((item, index) => {
+
                 function addAnimate() {
                     item.style.opacity = '1';
+                    item.style.transition = `all 0.4s ease ${index / 10}s`;
+
                     item.style.transform = 'translate(0, 0%)';
                 }
                 setTimeout(addAnimate, 500)
@@ -389,7 +407,7 @@ const fetchAll = async () => {
     }
 };
 
-// fetchAll();
+
 // const fetchMap = async () => {
 //     try {
 //         //https://tile.openweathermap.org/map/wind_new/10/{x}/{y}.png?appid=8e0dca8b03bf2ae875f303ecc8bb09c2
