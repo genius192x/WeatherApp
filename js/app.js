@@ -71,15 +71,6 @@ if (iconMenu && menuWrap) {
 }
 //========================================================================================================================================================
 
-
-// const app = document.querySelector(".app");
-// const body = document.querySelector('body');
-
-// body.insertAdjacentElement("afterBegin", loader)
-// setTimeout("loader.remove()", 1000)
-// setTimeout("loader.remove()", 1000)
-// const script_link = "http://api.weatherstack.com/current?access_key=75c5a84211d803cd2b29de9cde7415f8";
-
 const cardsWrap = document.querySelector('.tamplate__cards');
 let store = {
     city: "Taganrog",
@@ -276,9 +267,6 @@ textInput.addEventListener("input", handleInput);
 fetchData();
 
 //========================================================================================================================================================
-//========================================================================================================================================================
-
-//========================================================================================================================================================
 
 let storeHour = {
     date: 0,
@@ -300,10 +288,15 @@ const fetchAll = async () => {
         let tommorow;
         if (date.getMonth() < 10) {
             month = "0" + (date.getMonth() + 1);
+        } else {
+            month = (date.getMonth() + 1)
         }
         if (date.getDate() < 10) {
             tommorow = "0" + (date.getDate() + 1);
             day = "0" + date.getDate();
+        } else {
+            tommorow = (date.getDate() + 1);
+            day = date.getDate();
         }
 
         const tommorowWeather = listResult.filter(function (e) {
@@ -318,6 +311,7 @@ const fetchAll = async () => {
         const todayWeather = listResult.filter(function (e) {
             let date = new Date();
             let fullDate = `${date.getFullYear()}-0${date.getMonth() + 1}-${day}`
+            console.log(day);
             // console.log(e.dt_txt);
             const itemDate = e.dt_txt.slice(0, 10);
             if (itemDate == fullDate) {
